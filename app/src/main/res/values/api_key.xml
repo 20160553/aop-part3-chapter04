@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="interParkAPIKey">
+        인터파크 개인 키
+    </string>
+</resources>

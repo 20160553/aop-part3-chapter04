@@ -3,11 +3,14 @@ package com.example.aop_part3_chapter04
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
+import android.view.MotionEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.aop_part3_chapter04.adapter.BookAdapter
 import com.example.aop_part3_chapter04.api.BookService
 import com.example.aop_part3_chapter04.databinding.ActivityMainBinding
 import com.example.aop_part3_chapter04.model.BestSellerDto
+import com.example.aop_part3_chapter04.model.SearchBookDto
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -18,6 +21,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: BookAdapter
+    private lateinit var bookService: BookService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,10 +35,10 @@ class MainActivity : AppCompatActivity() {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-        val bookService = retrofit.create(BookService::class.java)
+        bookService = retrofit.create(BookService::class.java)
 
-        bookService.getBestSellerBooks(API_KEY)
-            .enqueue(object: Callback<BestSellerDto>{
+        bookService.getBestSellerBooks(getString(R.string.interParkAPIKey))
+            .enqueue(object : Callback<BestSellerDto> {
 
                 override fun onResponse(
                     call: Call<BestSellerDto>,
@@ -45,23 +49,47 @@ class MainActivity : AppCompatActivity() {
                         return
                     }
 
-                    response.body()?.let {
-                        Log.d(TAG, it.toString())
-
-                        it.books.forEach {book ->
-                            Log.d(TAG, book.toString())
-                        }
-
-                        adapter.submitList(it.books)
-                    }
-
-
+                    adapter.submitList(response.body()?.books.orEmpty())
                 }
 
                 override fun onFailure(call: Call<BestSellerDto>, t: Throwable) {
                     //TODO("Not yet implemented")
                 }
 
+            })
+
+        binding.searchEditText.setOnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == MotionEvent.ACTION_DOWN) {
+                search(binding.searchEditText.text.toString())
+                return@setOnKeyListener true
+            }
+
+            return@setOnKeyListener false
+
+        }
+
+    }
+
+    private fun search(keyword: String) {
+        bookService.getBooksByName(getString(R.string.interParkAPIKey), keyword)
+            .enqueue(object : Callback<SearchBookDto> {
+
+                override fun onResponse(
+                    call: Call<SearchBookDto>,
+                    response: Response<SearchBookDto>
+                ) {
+                    //TODO("Not yet implemented")
+                    if (response.isSuccessful.not()) {
+                        return
+                    }
+
+                    adapter.submitList(response.body()?.books.orEmpty())
+
+                }
+
+                override fun onFailure(call: Call<SearchBookDto>, t: Throwable) {
+                    //TODO("Not yet implemented")
+                }
             })
     }
 
@@ -73,8 +101,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val API_KEY = "인터파크 개인 키"
         const val TAG = "MainActivity"
     }
-
 }
