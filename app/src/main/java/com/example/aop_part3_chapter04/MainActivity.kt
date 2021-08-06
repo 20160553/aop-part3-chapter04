@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://book.interpark.com")
+            .baseUrl("https://book.interpark.com")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
                     call: Call<BestSellerDto>,
                     response: Response<BestSellerDto>
                 ) {
-                    TODO("Not yet implemented")
+                    //TODO("Not yet implemented")
                     if (response.isSuccessful.not()) {
                         return
                     }
@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<BestSellerDto>, t: Throwable) {
-                    TODO("Not yet implemented")
+                    //TODO("Not yet implemented")
                 }
 
             })
