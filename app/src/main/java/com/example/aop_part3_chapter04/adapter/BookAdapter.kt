@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide
 import com.example.aop_part3_chapter04.databinding.ItemBookBinding
 import com.example.aop_part3_chapter04.model.Book
 
-class BookAdapter: ListAdapter<Book, BookAdapter.BookItemViewHolder>(diffUtil) {
+class BookAdapter(private val itemClickedListener: (Book) -> Unit): ListAdapter<Book, BookAdapter.BookItemViewHolder>(diffUtil) {
     inner class BookItemViewHolder(
         private val binding: ItemBookBinding
         ): RecyclerView.ViewHolder(binding.root) {
@@ -17,6 +17,10 @@ class BookAdapter: ListAdapter<Book, BookAdapter.BookItemViewHolder>(diffUtil) {
             fun bind(bookModel: Book) {
                 binding.titleTextView.text = bookModel.title
                 binding.descriptionTextView.text = bookModel.description
+
+                binding.root.setOnClickListener {
+                    itemClickedListener(bookModel)
+                }
 
                 //이미지 로드 라이브러리 Glide를 통해 url로 이미지 뷰 연결
                 Glide
