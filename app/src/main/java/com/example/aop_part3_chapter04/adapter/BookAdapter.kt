@@ -10,7 +10,6 @@ import com.example.aop_part3_chapter04.databinding.ItemBookBinding
 import com.example.aop_part3_chapter04.model.Book
 
 class BookAdapter: ListAdapter<Book, BookAdapter.BookItemViewHolder>(diffUtil) {
-
     inner class BookItemViewHolder(
         private val binding: ItemBookBinding
         ): RecyclerView.ViewHolder(binding.root) {
